@@ -24,6 +24,10 @@ if !exists("g:syntastic_always_populate_loc_list")
     let g:syntastic_always_populate_loc_list = 0
 endif
 
+if !exists("g:syntastic_always_populate_qf_list")
+    let g:syntastic_always_populate_qf_list = 0
+endif
+
 if !exists("g:syntastic_auto_jump")
     let g:syntastic_auto_jump = 0
 endif
@@ -135,8 +139,13 @@ function! s:UpdateErrors(auto_invoked, ...)
 
     let loclist = g:SyntasticLoclist.current()
 
+    if g:syntastic_always_populate_qf_list
+        call loclist.quickfix()
+    endif
+
     if g:syntastic_always_populate_loc_list || g:syntastic_auto_jump
-        call setloclist(0, loclist.filteredRaw())
+        call setloclist(0, location_list)
+
         if g:syntastic_auto_jump && loclist.hasErrorsOrWarningsToDisplay()
             silent! lrewind
         endif

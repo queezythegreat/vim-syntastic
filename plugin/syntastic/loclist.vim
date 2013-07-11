@@ -141,9 +141,35 @@ function! g:SyntasticLoclist.filter(filters)
     return rv
 endfunction
 
+"display the cached errors for this buf in the quickfix list
+function! g:SyntasticLoclist.quickfix()
+    let location_list =  self.filteredRaw()
+    
+    " Find all buffers that have changed
+    let buffers_updated = {}
+    for location_entry in location_list
+        let buffers_updated[location_entry.bufnr] = 1
+    endfor
+
+    " Construct new quickfix, preserving existing entries
+    let quickfix_list = []
+    for quickfix_entry in getqflist()
+        if has_key(buffers_updated, quickfix_entry.bufnr)
+            continue
+        else
+            let quickfix_list += [quickfix_entry]
+        endif
+    endfor
+    let quickfix_list += location_list
+
+    " Set new quickfix
+    call setqflist(quickfix_list)
+endfunction
+
 "display the cached errors for this buf in the location list
 function! g:SyntasticLoclist.show()
     call setloclist(0, self.filteredRaw())
+
     if self.hasErrorsOrWarningsToDisplay()
         let num = winnr()
         exec "lopen " . g:syntastic_loc_list_height
