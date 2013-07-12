@@ -142,11 +142,12 @@ function! g:SyntasticLoclist.filter(filters)
 endfunction
 
 "display the cached errors for this buf in the quickfix list
-function! g:SyntasticLoclist.quickfix()
+function! g:SyntasticLoclist.quickfix(buffer_nr)
     let location_list =  self.filteredRaw()
     
     " Find all buffers that have changed
     let buffers_updated = {}
+    let buffers_updated[a:buffer_nr] = 1
     for location_entry in location_list
         let buffers_updated[location_entry.bufnr] = 1
     endfor

@@ -140,7 +140,7 @@ function! s:UpdateErrors(auto_invoked, ...)
     let loclist = g:SyntasticLoclist.current()
 
     if g:syntastic_always_populate_qf_list
-        call loclist.quickfix()
+        call loclist.quickfix(bufnr(''))
     endif
 
     if g:syntastic_always_populate_loc_list || g:syntastic_auto_jump
